@@ -1,17 +1,109 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>myFlix</title>
-  </head>
-  <body>
-    <h3>myFlix</h3>
-    <p>The web
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>myFlix</title>
+  <link href="css/styles.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <h3>myFlix</h3>
+  <p>The web
     application will provide users with access to information about different
     movies, directors, and genres. Users will be able to sign up, update their
     personal information, and create a list of their favorite movies</p>
-    <script type="module" src="server.js"></script>
-  </body>
-</html>
 
+  <h1>Table template</h1>
+  <table>
+    <tr>
+      <th>Business Logic</th>
+      <th>URL</th>
+      <th>HTTP Method</th>
+      <th>Query Paramaters</th>
+      <th>Request body data format</th>
+      <th>Response body data format</th>
+    </tr>
+    <tr>
+      <td>Return a list of ALL movies to the user</td>
+      <td>/movies</td>
+      <td>GET</td>
+      <td>None</td>
+      <td>None</td>
+      <td>A JSON object holding data about all the movies</td>
+    </tr>
+    <tr>
+      <td>Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by
+        title to the user</td>
+      <td>/movies/title/[Title]</td>
+      <td>GET</td>
+      <td><strong>Title</strong> (string) - Movie title</td>
+      <td>None</td>
+      <td>A JSON object holding data about a single movie, containing a description, genre, director, and image URL</td>
+    </tr>
+    <tr>
+      <td>Return data about a genre (description) by name/title (e.g., “Thriller”)</td>
+      <td>/movies/genre/[Genre]</td>
+      <td>GET</td>
+      <td><strong>Genre</strong> (string) - Genre name</td>
+      <td>None</td>
+      <td>A JSON object holding data about the genre of a single movie</td>
+    </tr>
+    <tr>
+      <td>Return data about a director (bio, birth year, death year) by name</td>
+      <td>/movies/director/[Director]</td>
+      <td>GET</td>
+      <td><strong>Director</strong> (string) - Director name</td>
+      <td>None</td>
+      <td>A JSON object holding data about the director of a single movie, containing bio, birth year, and death year</td>
+    </tr>
+    <tr>
+      <td>Allow new users to register</td>
+      <td>/users</td>
+      <td>POST</td>
+      <td>None</td>
+      <td>A JSON object holding data of the user name and favorite movie</td>
+      <td>A text message indicating that the user registered succcessfully</td>
+    </tr>
+    <tr>
+      <td>Allow users to update their user info (username)
+      </td>
+      <td>/users/[id]</td>
+      <td>PUT</td>
+      <td><strong>id</strong> (integer) - User's unique identifier</td>
+      <td>None</td>
+      <td>A text message indicating that the user's info was successfully updated</td>
+    </tr>
+    <tr>
+      <td>Allow users to add a movie to their list of favorites (showing only a text that a movie has been added)
+      </td>
+      <td>/users/[id]/[movieTitle]</td>
+      <td>POST</td>
+      <td><strong>id</strong> (integer) - User's unique identifier, <strong>movieTitle</strong> (string) - Movie title to add</td>
+      <td>A JSON object holding data about a single movie, containing a description, genre, director, and image URL</td>
+      <td>A text message indicating that the user successfully added a movie to their list</td>
+    </tr>
+    <tr>
+      <td>Allow users to remove a movie from their list of favorites (showing only a text that a movie has been removed)
+      </td>
+      <td>/users/[id]/[movieTitle]</td>
+      <td>DELETE</td>
+      <td><strong>id</strong> (integer) - User's unique identifier, <strong>movieTitle</strong> (string) - Movie title to add</td>
+      <td>None</td>
+      <td>A text message indicating that the user successfully removed a movie from their list</td>
+    </tr>
+    <tr>
+      <td>Allow existing users to deregister (showing only a text that a user email has been removed)
+      </td>
+      <td>/users/[id]</td>
+      <td>DELETE</td>
+      <td><strong>id</strong> (integer) - User's unique identifier</td>
+      <td>None</td>
+      <td>A text message indicating that the user's email has been removed</td>
+    </tr>
+  </table>
+  <script type="module" src="server.js"></script>
+</body>
+
+</html>
