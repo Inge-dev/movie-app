@@ -36,7 +36,7 @@
     <tr>
       <td>Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by
         title to the user</td>
-      <td>/movies/title/[Title]</td>
+      <td>/movies/[Title]</td>
       <td>GET</td>
       <td><strong>Title</strong> (string) - Movie title</td>
       <td>None</td>
@@ -63,44 +63,44 @@
       <td>/users</td>
       <td>POST</td>
       <td>None</td>
-      <td>A JSON object holding data of the user name and favorite movie</td>
-      <td>A text message indicating that the user registered succcessfully</td>
+      <td>A JSON object holding data of the user information (username, password, email, birthday)</td>
+      <td>Created JSON object containing data of the user information (username, password, email, birthday, favoriteMovies)</td>
     </tr>
     <tr>
       <td>Allow users to update their user info (username)
       </td>
-      <td>/users/[id]</td>
+      <td>/users/[username]</td>
       <td>PUT</td>
-      <td><strong>id</strong> (integer) - User's unique identifier</td>
-      <td>None</td>
-      <td>A text message indicating that the user's info was successfully updated</td>
+      <td><strong>username</strong> (string) - username</td>
+      <td>A JSON object containing updated user information (username, password, email, birthday)</td>
+      <td>Updated JSON user object</td>
     </tr>
     <tr>
       <td>Allow users to add a movie to their list of favorites (showing only a text that a movie has been added)
       </td>
-      <td>/users/[id]/[movieTitle]</td>
+      <td>/users/[username]/movies/[movieID]</td>
       <td>POST</td>
-      <td><strong>id</strong> (integer) - User's unique identifier, <strong>movieTitle</strong> (string) - Movie title to add</td>
-      <td>A JSON object holding data about a single movie, containing a description, genre, director, and image URL</td>
-      <td>A text message indicating that the user successfully added a movie to their list</td>
+      <td><strong>username</strong> (string) - username, <strong>movieID</strong> (integer) - Movie's unique identifier</td>
+      <td>None</td>
+      <td>Updated JSON user object with the movie added to favorites</td>
     </tr>
     <tr>
       <td>Allow users to remove a movie from their list of favorites (showing only a text that a movie has been removed)
       </td>
-      <td>/users/[id]/[movieTitle]</td>
+      <td>/users/[username]/movies/[movieID]</td>
       <td>DELETE</td>
-      <td><strong>id</strong> (integer) - User's unique identifier, <strong>movieTitle</strong> (string) - Movie title to add</td>
+      <td><strong>username</strong> (string) - username, <strong>movieID</strong> (integer) - Movie's unique identifier</td>
       <td>None</td>
-      <td>A text message indicating that the user successfully removed a movie from their list</td>
+      <td>Updated JSON user object with the movie removed from favorites</td>
     </tr>
     <tr>
       <td>Allow existing users to deregister (showing only a text that a user email has been removed)
       </td>
-      <td>/users/[id]</td>
+      <td>/users/[username]</td>
       <td>DELETE</td>
-      <td><strong>id</strong> (integer) - User's unique identifier</td>
+      <td><strong>username</strong> (string) - username</td>
       <td>None</td>
-      <td>A text message indicating that the user's email has been removed</td>
+      <td>A message confirming that the user was deleted</td>
     </tr>
   </table>
   <script type="module" src="server.js"></script>
