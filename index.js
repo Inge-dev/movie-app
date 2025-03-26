@@ -18,16 +18,29 @@ app.use(express.urlencoded({ extended: true }));
 const bodyParser = require('body-parser'),
   methodOverride = require('method-override');
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-// let auth = require('./auth')(app);
-
 const passport = require('passport');
 require('./passport');
+
+const cors = require('cors');
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+
+const { check, validationResult } = require('express-validator');
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message ), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 let auth = require('./auth')(app);
 
@@ -41,8 +54,8 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), async (req,
     .catch((err) => {
       console.error(err);
       res.status(500).send('Error: ' + err);
-    });;
-})
+    });
+});
 
 // Get a movie by title
 app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), async (req, res) => {
@@ -81,16 +94,29 @@ app.get('/movies/director/:directorName', passport.authenticate('jwt', { session
 });
 
 //CREATE
-app.post('/users', async (req, res) => {
+app.post('/users', [
+  check('username', 'Username is required').isLength({min: 5}),
+  check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('password', 'Password is required').not().isEmpty(),
+  check('email', 'Email does not appear to be valid').isEmail()
+], async (req, res) => {
+  // check the validation object for errors
+  let errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  let hashedPassword = Users.hashPassword(req.body.password);
   await Users.findOne({ username: req.body.username })
     .then((user) => {
       if (user) {
-        return res.status(400).send(req.body.username + 'already exists');
+        return res.status(400).send(req.body.username + ' already exists');
       } else {
         Users
           .create({
             username: req.body.username,
-            password: req.body.password,
+            password: hashedPassword,
             email: req.body.email,
             birthday: req.body.birthday
           })
@@ -131,19 +157,34 @@ app.get('/users', passport.authenticate('jwt', { session: false }), async (req, 
     });
 });
 
-app.put('/users/:username', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.put('/users/:username', passport.authenticate('jwt', { session: false }),  [
+  check('username', 'Username is required').isLength({ min: 5 }),
+  check('username', 'Username contains non-alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('password', 'Password is required').not().isEmpty(),
+  check('email', 'Email does not appear to be valid').isEmail()
+], 
+async (req, res) => {
+
+  // Check the validation object for errors
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
   
   // CONDITION TO CHECK ADDED HERE
   if(req.user.username !== req.params.username){
     return res.status(400).send('Permission denied');
 }
 // CONDITION ENDS
+
+let hashedPassword = Users.hashPassword(req.body.password);
+
   
   await Users.findOneAndUpdate({ username: req.params.username }, {
     $set:
     {
       username: req.body.username,
-      password: req.body.password,
+      password: hashedPassword,
       email: req.body.email,
       birthday: req.body.birthday
     }
@@ -209,6 +250,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
 });
