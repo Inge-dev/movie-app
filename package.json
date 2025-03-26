@@ -21,8 +21,11 @@
   },
   "homepage": "https://github.com/Inge-dev/movie-app#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
+    "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "method-override": "^3.0.0",
