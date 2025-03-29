@@ -48,6 +48,11 @@ let auth = require('./auth')(app);
 
 app.use(methodOverride());
 
+app.get("/", (req, res) => {
+  res.send("Welcome to MyFlix API! 🎬");
+});
+
+
 app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
   Movies.find()
     .then((movies) => {
