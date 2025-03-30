@@ -9,8 +9,6 @@ const Models = require('./models.js');
 const Movies = Models.Movie; //takes the Movie model from my mocel.js file and gives it the name 'Movies'
 const Users = Models.User;
 
-const bcrypt = require('bcrypt');
-
 // mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
