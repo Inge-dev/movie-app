@@ -35,10 +35,10 @@ const { check, validationResult } = require('express-validator');
 
 app.use(cors({
   origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn’t found on the list of allowed origins
       let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message ), false);
+      return callback(new Error(message), false);
     }
     return callback(null, true);
   }
@@ -53,7 +53,7 @@ app.get("/", (req, res) => {
 });
 
 
-app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.get('/movies', async (req, res) => {
   Movies.find()
     .then((movies) => {
       res.status(201).json(movies);
@@ -102,7 +102,7 @@ app.get('/movies/director/:directorName', passport.authenticate('jwt', { session
 
 //CREATE
 app.post('/users', [
-  check('username', 'Username is required').isLength({min: 5}),
+  check('username', 'Username is required').isLength({ min: 5 }),
   check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
   check('password', 'Password is required').not().isEmpty(),
   check('email', 'Email does not appear to be valid').isEmail()
@@ -164,47 +164,47 @@ app.get('/users', passport.authenticate('jwt', { session: false }), async (req, 
     });
 });
 
-app.put('/users/:username', passport.authenticate('jwt', { session: false }),  [
+app.put('/users/:username', passport.authenticate('jwt', { session: false }), [
   check('username', 'Username is required').isLength({ min: 5 }),
   check('username', 'Username contains non-alphanumeric characters - not allowed.').isAlphanumeric(),
   check('password', 'Password is required').not().isEmpty(),
   check('email', 'Email does not appear to be valid').isEmail()
-], 
-async (req, res) => {
+],
+  async (req, res) => {
 
-  // Check the validation object for errors
-  let errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
-  
-  // CONDITION TO CHECK ADDED HERE
-  if(req.user.username !== req.params.username){
-    return res.status(400).send('Permission denied');
-}
-// CONDITION ENDS
-
-let hashedPassword = Users.hashPassword(req.body.password);
-
-  
-  await Users.findOneAndUpdate({ username: req.params.username }, {
-    $set:
-    {
-      username: req.body.username,
-      password: hashedPassword,
-      email: req.body.email,
-      birthday: req.body.birthday
+    // Check the validation object for errors
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
     }
-  },
-    { new: true }) // This line makes sure that the updated document is returned
-    .then((updatedUser) => {
-      res.json(updatedUser);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    })
-});
+
+    // CONDITION TO CHECK ADDED HERE
+    if (req.user.username !== req.params.username) {
+      return res.status(400).send('Permission denied');
+    }
+    // CONDITION ENDS
+
+    let hashedPassword = Users.hashPassword(req.body.password);
+
+
+    await Users.findOneAndUpdate({ username: req.params.username }, {
+      $set:
+      {
+        username: req.body.username,
+        password: hashedPassword,
+        email: req.body.email,
+        birthday: req.body.birthday
+      }
+    },
+      { new: true }) // This line makes sure that the updated document is returned
+      .then((updatedUser) => {
+        res.json(updatedUser);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      })
+  });
 
 // Add a movie to a user's list of favorites
 app.post('/users/:username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
@@ -258,7 +258,7 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on Port ' + port);
 });
 
